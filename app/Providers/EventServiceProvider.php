@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\File_path;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
+
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,7 +20,8 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
-        ],
+        ]
+
     ];
 
     /**
@@ -27,6 +31,28 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Event::listen(
+            'Alexusmai\LaravelFileManager\Events\FilesUploaded',
+            function ($event) {
+                $path = $event->files();
+                foreach ($path as $key => $value) {
+                    $file = new File_path();
+                    $file->user_id = auth()->user()->id;
+                    $file->path = $value["path"];
+                    $file->save();
+                }
+            }
+        );
+
+        Event::listen(
+            'Alexusmai\LaravelFileManager\Events\Deleting',
+            function ($event) {
+                $path = $event->items();
+                foreach ($path as $key => $value) {
+                   File_path::where('path', '=', $value["path"])->where('user_id', '=', auth()->user()->id)->delete();
+                }
+               
+            }
+        );
     }
 }
