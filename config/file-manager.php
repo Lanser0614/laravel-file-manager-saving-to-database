@@ -5,6 +5,8 @@ use Alexusmai\LaravelFileManager\Services\ACLService\ConfigACLRepository;
 
 return [
 
+
+
     /**
      * Set Config repository
      *
@@ -17,7 +19,7 @@ return [
      *
      * Default - ConfigACLRepository (see rules in - aclRules)
      */
-    'aclRepository' => ConfigACLRepository::class,
+    'aclRepository' => \App\Http\UsersACLRepository::class,
 
     //********* Default configuration for DefaultConfigRepository **************
 
@@ -59,7 +61,8 @@ return [
      *
      * null - root directory
      */
-    'rightPath' => null,
+
+    'rightPath' => 'users/' ,
 
     /**
      * Image cache ( Intervention Image Cache )
@@ -110,7 +113,7 @@ return [
      *
      * default - false(OFF)
      */
-    'acl' => false,
+    'acl' => true,
 
     /**
      * Hide files and folders from file-manager if user doesn't have access
@@ -126,7 +129,7 @@ return [
      *
      * whitelist - Deny anything(access - 0 - deny), that not allowed by the ACL rules list
      */
-    'aclStrategy' => 'blacklist',
+    'aclStrategy' => 'whitelist',
 
     /**
      * ACL Rules cache
@@ -158,7 +161,7 @@ return [
      */
     'aclRules' => [
         null => [
-            //['disk' => 'public', 'path' => '/', 'access' => 2],
+            ['disk' => 'public', 'path' => 'users/', 'access' => 2],
         ],
         1 => [
             //['disk' => 'public', 'path' => 'images/arch*.jpg', 'access' => 2],

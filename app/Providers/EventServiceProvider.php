@@ -35,6 +35,7 @@ class EventServiceProvider extends ServiceProvider
             'Alexusmai\LaravelFileManager\Events\FilesUploaded',
             function ($event) {
                 $path = $event->files();
+//                dump($event->disk());
                 foreach ($path as $key => $value) {
                     $file = new File_path();
                     $file->user_id = auth()->user()->id;
@@ -51,7 +52,7 @@ class EventServiceProvider extends ServiceProvider
                 foreach ($path as $key => $value) {
                    File_path::where('path', '=', $value["path"])->where('user_id', '=', auth()->user()->id)->delete();
                 }
-               
+
             }
         );
     }
